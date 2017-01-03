@@ -23,7 +23,7 @@ int main (int argc, char **argv)
 
     //basic check of the arguments
     if( argc != 2 ) {
-        perror("Usage: TCPServer <PORT>");
+        fprintf(stderr, "Usage: TCPServer <PORT>\n");
         exit(1);
     }
 

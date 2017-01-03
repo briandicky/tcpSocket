@@ -8,20 +8,23 @@
 
 
 #define MAXLINE 4096 /*max text line length*/
-#define SERV_PORT 3000 /*port*/
+//#define SERV_PORT 3000 /*port*/
 
 int main(int argc, char **argv) 
 {
     int sockfd;
     struct sockaddr_in servaddr;
     char sendline[MAXLINE], recvline[MAXLINE];
+    int SERV_PORT;
 
     //basic check of the arguments
     //additional checks can be inserted
-    if (argc != 2) {
-        perror("Usage: TCPClient <IP address of the server>"); 
+    if (argc != 3) {
+        fprintf(stderr, "Usage: TCPClient <IP address of the server> <Port of the server>\n"); 
         exit(1);
     }
+
+    SERV_PORT = atoi(argv[2]);
 
     //Create a socket for the client
     //If sockfd<0 there was an error in the creation of the socket
