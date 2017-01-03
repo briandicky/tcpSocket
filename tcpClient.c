@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 
     //basic check of the arguments
     //additional checks can be inserted
-    if (argc !=2) {
+    if (argc != 2) {
         perror("Usage: TCPClient <IP address of the server>"); 
         exit(1);
     }

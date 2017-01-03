@@ -18,8 +18,9 @@ int main (int argc, char **argv)
     socklen_t clilen;
     char buf[MAXLINE];
     struct sockaddr_in cliaddr, servaddr;
+    FILE *fp;
 
-    //Create a socket for the soclet
+    //Create a socket
     //If sockfd<0 there was an error in the creation of the socket
     if ((listenfd = socket (AF_INET, SOCK_STREAM, 0)) <0) {
         perror("Problem in creating the socket");
@@ -59,6 +60,10 @@ int main (int argc, char **argv)
                 printf("%s","String received from and resent to the client:");
                 puts(buf);
                 send(connfd, buf, n, 0);
+            }
+
+            if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
+                send(connfd, buf, strlen(buf), 0);
             }
 
             if (n < 0)
