@@ -57,7 +57,13 @@ int main (int argc, char **argv)
             close (listenfd);
 
             if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
+                sprintf(buf, "error in reporting the number of processes");
                 send(connfd, buf, strlen(buf), 0);
+            } else {
+                while( fgets(buf, MAXLINE, fp) != NULL)
+                    send(connfd, buf, strlen(buf), 0);
+
+                pclose(fp);
             }
 
             while ( (n = recv(connfd, buf, MAXLINE,0)) > 0)  {
