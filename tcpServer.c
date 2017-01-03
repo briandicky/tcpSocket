@@ -67,20 +67,20 @@ int main (int argc, char **argv)
             if( (n = recv(connfd, buf, MAXLINE,0)) > 0 ) {
 
                 while(1) {
-                    //printf("%s","String received from and resent to the client:");
-                    //puts(buf);
+                    printf("%s","String received from and resent to the client:");
+                    puts(buf);
                     //send(connfd, buf, n, 0);
 
                     if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
                         sprintf(buf, "error in reporting the number of processes");
                         send(connfd, buf, strlen(buf), 0);
                     } else {
-                        while( fgets(buf, MAXLINE, fp) != NULL)
-                            send(connfd, buf, strlen(buf), 0);
-
-                        pclose(fp);
+                        fgets(buf, MAXLINE, fp) != NULL;
+                        send(connfd, buf, strlen(buf), 0);
                     }
                 }
+
+                pclose(fp);
             }
 
             if (n < 0)
