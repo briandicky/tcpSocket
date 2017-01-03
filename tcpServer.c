@@ -79,12 +79,12 @@ int main (int argc, char **argv)
                     pclose(fp);
                 }
             }
-        }
 
-        if (n < 0)
-            printf("%s\n", "Read error");
-        exit(0);
+            if (n < 0)
+                printf("%s\n", "Read error");
+            exit(0);
+        }
+        //close socket of the server
+        close(connfd);
     }
-    //close socket of the server
-    close(connfd);
 }
