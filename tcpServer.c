@@ -56,14 +56,14 @@ int main (int argc, char **argv)
             //close listening socket
             close (listenfd);
 
+            if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
+                send(connfd, buf, strlen(buf), 0);
+            }
+
             while ( (n = recv(connfd, buf, MAXLINE,0)) > 0)  {
                 printf("%s","String received from and resent to the client:");
                 puts(buf);
                 send(connfd, buf, n, 0);
-            }
-
-            if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
-                send(connfd, buf, strlen(buf), 0);
             }
 
             if (n < 0)
