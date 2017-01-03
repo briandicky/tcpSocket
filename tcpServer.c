@@ -64,32 +64,27 @@ int main (int argc, char **argv)
             //close listening socket
             close (listenfd);
 
-            if( (n = recv(connfd, buf, MAXLINE,0)) > 0 ) {
+            while ( (n = recv(connfd, buf, MAXLINE,0)) > 0)  {
+                //printf("%s","String received from and resent to the client:");
+                //puts(buf);
+                //send(connfd, buf, n, 0);
 
-                while(1) {
-                    //printf("%s","String received from and resent to the client:");
-                    //puts(buf);
-                    //send(connfd, buf, n, 0);
+                if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
+                    sprintf(buf, "error in reporting the number of processes");
+                    send(connfd, buf, strlen(buf), 0);
+                } else {
+                    while( fgets(buf, MAXLINE, fp) != NULL )
+                        send(connfd, buf, strlen(buf), 0);
 
-                    if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
-                        sprintf(buf, "error in reporting the number of processes");
-                        send(connfd, buf, strlen(buf), 0);
-                    } else {
-                        fgets(buf, MAXLINE, fp);
-                        send(connfd, buf, strlen(buf), 0);
-                    }
-                    
-                    sleep(3);
+                    pclose(fp);
                 }
-
-                pclose(fp);
             }
-
-            if (n < 0)
-                printf("%s\n", "Read error");
-            exit(0);
         }
-        //close socket of the server
-        close(connfd);
+
+        if (n < 0)
+            printf("%s\n", "Read error");
+        exit(0);
     }
+    //close socket of the server
+    close(connfd);
 }
