@@ -57,9 +57,9 @@ int main (int argc, char **argv)
             close (listenfd);
 
             while ( (n = recv(connfd, buf, MAXLINE,0)) > 0)  {
-                printf("%s","String received from and resent to the client:");
-                puts(buf);
-                send(connfd, buf, n, 0);
+                //printf("%s","String received from and resent to the client:");
+                //puts(buf);
+                //send(connfd, buf, n, 0);
 
                 if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
                     sprintf(buf, "error in reporting the number of processes");
