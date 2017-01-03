@@ -8,7 +8,7 @@
 
 
 #define MAXLINE 4096 /*max text line length*/
-#define SERV_PORT 3000 /*port*/
+//#define SERV_PORT 3000 /*port*/
 #define LISTENQ 8 /*maximum number of client connections*/
 
 int main (int argc, char **argv)
@@ -19,6 +19,15 @@ int main (int argc, char **argv)
     char buf[MAXLINE];
     struct sockaddr_in cliaddr, servaddr;
     FILE *fp;
+    int SERV_PORT;
+
+    //basic check of the arguments
+    if( argc != 2 ) {
+        perror("Usage: TCPServer <PORT>");
+        exit(1);
+    }
+
+    SERV_PORT = atoi(argv[1]);
 
     //Create a socket
     //If sockfd<0 there was an error in the creation of the socket
@@ -26,7 +35,6 @@ int main (int argc, char **argv)
         perror("Problem in creating the socket");
         exit(2);
     }
-
 
     //preparation of the socket address
     servaddr.sin_family = AF_INET;
@@ -56,19 +64,22 @@ int main (int argc, char **argv)
             //close listening socket
             close (listenfd);
 
-            while ( (n = recv(connfd, buf, MAXLINE,0)) > 0)  {
-                //printf("%s","String received from and resent to the client:");
-                //puts(buf);
-                //send(connfd, buf, n, 0);
+            if( (n = recv(connfd, buf, MAXLINE,0)) > 0 ) {
 
-                if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
-                    sprintf(buf, "error in reporting the number of processes");
-                    send(connfd, buf, strlen(buf), 0);
-                } else {
-                    while( fgets(buf, MAXLINE, fp) != NULL)
+                while(1) {
+                    //printf("%s","String received from and resent to the client:");
+                    //puts(buf);
+                    //send(connfd, buf, n, 0);
+
+                    if( ( fp = popen("echo $(( $(ps aux | wc -l) - 1 ))", "r") ) == NULL ) {
+                        sprintf(buf, "error in reporting the number of processes");
                         send(connfd, buf, strlen(buf), 0);
+                    } else {
+                        while( fgets(buf, MAXLINE, fp) != NULL)
+                            send(connfd, buf, strlen(buf), 0);
 
-                    pclose(fp);
+                        pclose(fp);
+                    }
                 }
             }
 
